@@ -4,7 +4,7 @@ import { Spinner } from "react-bootstrap";
 import "../css/loading.css";
 
 class Loading extends React.Component {
-    render() {
+    render = () => {
         return (
             <div className="loading">
                 <Spinner animation="grow" variant="primary" />

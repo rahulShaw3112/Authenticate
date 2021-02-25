@@ -1,22 +1,22 @@
 import React from "react";
-import { Container, Row, Form, Button, Card, Col } from "react-bootstrap";
+import { Container, Row, Form, Button, Col } from "react-bootstrap";
 import { Link, Redirect } from "react-router-dom";
 
 import { signup as signupservice } from '../services/auth';
 import AuthContext from '../context/AuthContext';
 import Loading from "./Loading";
+import Error from "./Error";
 
 class SignUp extends React.Component {
   static contextType = AuthContext;
   constructor(props) {
     super(props);
-    this.handleChange = this.handleChange.bind(this);
-    this.handleSubmit = this.handleSubmit.bind(this);
 
     this.state = {
       name: "",
       email: "",
-      password: ""
+      password: "",
+      error: ""
     }
   }
 
@@ -26,10 +26,11 @@ class SignUp extends React.Component {
   }
 
   handleResponse = ({ data }) => {
-    if(data.success) {
+    if (data.success) {
       this.context.setIsLoggedIn(true);
+      this.setState({ ...this.state, error: "" })
     } else {
-      console.error('Signup failed')
+      this.setState({ ...this.state, error: data.msg })
     }
   }
 
@@ -37,7 +38,7 @@ class SignUp extends React.Component {
     this.setState({ ...this.state, [e.target.name]: e.target.value} )
   }
 
-  render() {
+  render = () => {
     if(this.state == null) {
       return null;
     }
@@ -57,6 +58,7 @@ class SignUp extends React.Component {
           <Col xs={12} sm={6} md={6} lg={6} className="login-form  align-items-center">
             <div>
               <Form className="login-card" onSubmit={this.handleSubmit} id="form">
+                <Error error={this.state.error}/>
                 <h1>Sign Up</h1>
                 <Form.Group controlId="formBasicName">
                   <Form.Label>Name</Form.Label>

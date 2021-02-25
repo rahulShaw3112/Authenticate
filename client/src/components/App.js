@@ -11,7 +11,7 @@ import PrivateRoute from "./PrivateRoute";
 axios.defaults.withCredentials = true;
 
 class App extends React.Component {
-  render() {
+  render = () => {
     return (
       <AuthContextProvider>
         <BrowserRouter>

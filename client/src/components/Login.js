@@ -2,9 +2,10 @@ import React from "react";
 import { Container, Row, Form, Button, Col } from "react-bootstrap";
 import "../css/login.css";
 import { Link, Redirect } from "react-router-dom";
+import Error from "./Error";
 
-import { login as loginservice } from '../services/auth';
-import AuthContext from '../context/AuthContext';
+import { login as loginservice } from "../services/auth";
+import AuthContext from "../context/AuthContext";
 import Loading from "./Loading";
 
 class Login extends React.Component {
@@ -15,39 +16,37 @@ class Login extends React.Component {
     this.state = {
       email: "",
       password: "",
+      error: "",
     };
   }
 
   handleSubmit = (event) => {
     event.preventDefault();
-    loginservice({ ...this.state }, this.handleResponse)
-  }
+    loginservice({ ...this.state }, this.handleResponse);
+  };
 
   handleResponse = ({ data }) => {
-    if(data.success) {
+    if (data.success) {
       this.context.setIsLoggedIn(true);
+      this.setState({ ...this.state, error: "" });
     } else {
-      console.error('Login failed')
+      this.setState({ ...this.state, error: data.msg });
     }
-  }
+  };
 
   handleChange = (e) => {
     this.setState({ ...this.state, [e.target.name]: e.target.value });
-  }
+  };
 
-  render() {
-    if(this.state == null) {
+  render = () => {
+    if (this.state == null) {
       return null;
     }
-    if(this.context && this.context.isLoggedIn == null) {
-      return (
-        <Loading />
-      )
+    if (this.context && this.context.isLoggedIn == null) {
+      return <Loading />;
     }
-    if(this.context && this.context.isLoggedIn) {
-      return (
-        <Redirect to="/home" />
-      );
+    if (this.context && this.context.isLoggedIn) {
+      return <Redirect to="/home" />;
     }
     return (
       <Container>
@@ -61,6 +60,7 @@ class Login extends React.Component {
           >
             <div>
               <Form className="login-card" onSubmit={this.handleSubmit}>
+                <Error error={this.state.error} />
                 <h1>Login</h1>
                 <Form.Group controlId="formBasicEmail">
                   <Form.Label>Email address</Form.Label>
@@ -86,7 +86,8 @@ class Login extends React.Component {
                   Submit
                 </Button>
                 <Form.Text className="text-muted">
-                  or <Link to="/signup">Create an account</Link> if you  don't have one.
+                  or <Link to="/signup">Create an account</Link> if you don't
+                  have one.
                 </Form.Text>
               </Form>
             </div>
@@ -94,7 +95,7 @@ class Login extends React.Component {
         </Row>
       </Container>
     );
-  }
+  };
 }
 
 export default Login;

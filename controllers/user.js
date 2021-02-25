@@ -9,6 +9,7 @@ exports.loginUser = async (req, res, next) => {
   const filter = { email: email };
   try {
     const result = await User.findOne(filter);
+    if(result == null) return res.status(200).json({ msg: "Wrong credentials", success: false });
     const isMatched = await bcrypt.compare(password, result.password);
     if (isMatched === true) {
       const newUser = {
@@ -27,7 +28,7 @@ exports.loginUser = async (req, res, next) => {
         }
       );
     } else {
-      res.status(401).json({ msg: "Wrong credentials" });
+      res.status(200).json({ msg: "Wrong credentials" });
     }
   } catch (e) {
     res.status(500).json({ msg: "Internal Server Error." });
@@ -65,6 +66,7 @@ exports.registerUser = async (req, res, next) => {
       }
     );
   } catch(e) {
+    if(e.code === 11000) res.status(200).json({ msg: "User already exists. Please try logging in.", success: false })
     res.status(500).json({ msg: "Internal Server Error." })
   }
 };

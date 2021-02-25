@@ -5,7 +5,7 @@ import AuthContext from '../context/AuthContext';
 
 class PrivateRoute extends React.Component {
   static contextType = AuthContext;
-  render() {
+  render = () => {
     const { component, ...rest } = this.props;
     if (this.context && this.context.isLoggedIn == null) {
       return <Loading />;
